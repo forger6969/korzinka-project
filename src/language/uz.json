@@ -6,5 +6,8 @@
     "header_about_us_item": "Biz haqimizada",
     "header_store_item": "Dokonlar",
     "header_news_item": "Yangiliklar",
-    "header_more_item": "Yana"
+    "header_more_item": "Yana",
+    "header_cart_item": "Savat",
+    "header_favorites_item": "Saralangan",
+    "product_card_cart": "Savatga qoshish"
 }

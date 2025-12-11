@@ -6,5 +6,8 @@
     "header_about_us_item": "О нас",
     "header_store_item": "Магазины",
     "header_news_item": "Новости",
-    "header_more_item": "Еще"
+    "header_more_item": "Еще",
+    "header_cart_item": "Корзина",
+    "header_favorites_item": "Избранное",
+    "product_card_cart": "Добавить в корзину"
 }

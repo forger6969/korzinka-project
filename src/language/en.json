@@ -6,5 +6,8 @@
     "header_about_us_item": "About us",
     "header_store_item": "Stores",
     "header_news_item": "News",
-    "header_more_item": "More"
+    "header_more_item": "More",
+    "header_cart_item": "Cart",
+    "header_favorites_item": "Favorites",
+    "product_card_cart":"Add to cart"
 }
