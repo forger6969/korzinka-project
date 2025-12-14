@@ -1,12 +1,14 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { LuX } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
 
 const LoginModal = ({ onClose }) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const navigate = useNavigate()
 
     const loginUser = async () => {
         try {
@@ -21,6 +23,7 @@ const LoginModal = ({ onClose }) => {
             localStorage.setItem(`currentUserID`, JSON.stringify(login.data.user.id))
 
             onClose();
+            navigate(0)
 
         } catch (err) {
 

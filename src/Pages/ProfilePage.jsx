@@ -3,6 +3,7 @@ import { FaStar } from "react-icons/fa"
 import { AppContext } from "../AppContext"
 import axios from "axios"
 import { motion, AnimatePresence } from "framer-motion"
+import { useNavigate } from "react-router-dom"
 
 const ProfilePage = () => {
     const { userInfo } = useContext(AppContext)
@@ -11,7 +12,8 @@ const ProfilePage = () => {
     const [userDetails, setDetails] = useState(null)
     const [openStates, setOpenStates] = useState([])
     const [reviews, setReviews] = useState(null)
-    const [showHistory, setShowHistory] = useState(false) // ✅
+    const [showHistory, setShowHistory] = useState(false)
+    const navigate = useNavigate()
 
     const getUserDetail = async () => {
         try {
@@ -40,6 +42,12 @@ const ProfilePage = () => {
         } catch (err) {
             console.log(err)
         }
+    }
+
+    const exitToAccountClick = () => {
+        localStorage.clear()
+        navigate(`/`)
+        navigate(0)
     }
 
     useEffect(() => {
@@ -189,6 +197,9 @@ const ProfilePage = () => {
                                     })}
                             </div>
                         </div>
+                        <button onClick={exitToAccountClick} className="bg-[#e4002b] text-white font-semibold py-5 px-4 rounded-lg shadow-md hover:bg-[#ff4c5b] hover:shadow-lg transition duration-300 mt-[20px] w-full ">
+                            Выйти из аккаунта
+                        </button>
                     </>
                 )}
             </AnimatePresence>
