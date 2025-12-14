@@ -6,24 +6,21 @@ import {
     biz_haqimizda_SVG, cart_SVG, catalog_SVG, dokonlar_SVG, heart_SVG,
     karyera_SVG, korzinka_go_SVG, korzinka_plus_SVG, news_SVG, search_SVG, yana_SVG
 } from "./SvgMaterials";
-import { LuUserRound } from "react-icons/lu";
+import { LuUserRound, LuMenu, LuX } from "react-icons/lu";
 import LoginModal from "./LoginModal";
 import { AppContext } from "../AppContext";
-import axios from "axios";
-import { path } from "framer-motion/client";
 import { Link, useNavigate } from "react-router-dom";
-
 
 export default function HeaderLanding() {
 
     const { userInfo } = useContext(AppContext)
-    const { user, userID } = userInfo
+    const { user } = userInfo
 
     const [hidden, setHidden] = useState(false);
     const [lastY, setLastY] = useState(0);
     const [currentLanguage, setLang] = useState("");
-
     const [loginModal, setModal] = useState(false)
+    const [burgerOpen, setBurgerOpen] = useState(false)
 
     const { t, i18n } = useTranslation();
     const navigate = useNavigate()
@@ -47,12 +44,12 @@ export default function HeaderLanding() {
         setLang(getLang);
     }, []);
 
-
     useEffect(() => {
         const handleScroll = () => {
             const currentY = window.scrollY;
             if (currentY > lastY && currentY > 50) {
                 setHidden(true);
+                setBurgerOpen(false); // Закрываем бургер при скролле вниз
             } else {
                 setHidden(false);
             }
@@ -62,6 +59,7 @@ export default function HeaderLanding() {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, [lastY]);
+
 
     const navItems = [
         { icon: catalog_SVG, label: t("header_catalog_item"), path: "/" },
@@ -78,6 +76,7 @@ export default function HeaderLanding() {
 
     return (
         <>
+            {/* HEADER */}
             <motion.header
                 initial={{ y: -70, opacity: 0 }}
                 animate={{ y: hidden ? -100 : 0, opacity: hidden ? 0 : 1 }}
@@ -90,7 +89,7 @@ export default function HeaderLanding() {
                         <img src={logo} alt="Korzinka" className="h-10 object-contain" />
                     </Link>
 
-                    {/* Навигация */}
+                    {/* Десктопное меню */}
                     <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-gray-700">
                         {navItems.map((item, idx) => (
                             <Link to={item.path} key={idx} className="flex flex-col items-center cursor-pointer hover:text-[#e4002b] transition">
@@ -100,9 +99,18 @@ export default function HeaderLanding() {
                         ))}
                     </nav>
 
-                    {/* Правый блок: язык, баланс, профиль */}
-                    <div className="flex items-center gap-4">
-                        {/* Выбор языка */}
+                    {/* Мобильный бургер */}
+                    <div className="lg:hidden flex items-center gap-4">
+                        <button onClick={() => setBurgerOpen(prev => !prev)} className="text-gray-700 text-2xl">
+                            {burgerOpen ? <LuX /> : <LuMenu />}
+                        </button>
+                        <div onClick={openModalCheck} className="flex flex-col items-center text-gray-800 cursor-pointer">
+                            <LuUserRound size={24} className="text-[#e4002b]" />
+                        </div>
+                    </div>
+
+                    {/* Язык и баланс для десктопа */}
+                    <div className="hidden lg:flex items-center gap-4">
                         <div className="dropdown dropdown-end">
                             <div tabIndex={0} className="btn btn-sm bg-gray-100 border-gray-200 text-gray-800">
                                 {currentLanguage.toUpperCase()}
@@ -114,26 +122,44 @@ export default function HeaderLanding() {
                             </ul>
                         </div>
 
-                        {/* Баланс */}
                         {user && <div className="bg-[#e4002b] text-white px-4 py-1 rounded-lg flex flex-col items-center justify-center text-xs">
                             <span>Balance</span>
                             <span className="font-bold text-sm">{user.balance.toLocaleString()}</span>
                         </div>}
-
-                        {/* Профиль */}
-                        <div onClick={openModalCheck} className="flex flex-col items-center text-gray-800 cursor-pointer">
-                            <LuUserRound size={24} className="text-[#e4002b]" />
-                            <span className="text-xs mt-1">{user ? user.name : "Войти"}</span>
-                        </div>
                     </div>
                 </div>
+
+                {/* Мобильное выдвижное меню */}
+                {burgerOpen && (
+                    <motion.nav
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="lg:hidden bg-white shadow-md w-full absolute top-full left-0 p-4 flex flex-col gap-4 z-40"
+                    >
+                        {navItems.map((item, idx) => (
+                            <Link
+                                key={idx}
+                                to={item.path}
+                                onClick={() => setBurgerOpen(false)}
+                                className="flex items-center gap-2 text-gray-700 hover:text-[#e4002b] transition"
+                            >
+                                {item.icon}
+                                <span>{item.label}</span>
+                            </Link>
+                        ))}
+                        {/* Языки */}
+                        <div className="flex gap-2 mt-2">
+                            <button onClick={() => changeLanguage("uz")} className="btn btn-xs" style={{ backgroundColor: '#e4002b', color: 'white' }}>UZ</button>
+                            <button onClick={() => changeLanguage("ru")} className="btn btn-xs" style={{ backgroundColor: '#e4002b', color: 'white' }}>RU</button>
+                            <button onClick={() => changeLanguage("en")} className="btn btn-xs" style={{ backgroundColor: '#e4002b', color: 'white' }}>EN</button>
+                        </div>
+                    </motion.nav>
+                )}
             </motion.header>
 
-            {
-                loginModal && <LoginModal onClose={() => setModal(false)} />
-            }
-
-
+            {loginModal && <LoginModal onClose={() => setModal(false)} />}
         </>
     );
 }

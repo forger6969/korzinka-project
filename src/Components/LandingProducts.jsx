@@ -114,7 +114,7 @@ const LandingProducts = () => {
             {/* Продукты */}
             <div className="flex flex-wrap gap-[40px] pb-4 justify-center">
                 {filteredProducts.map((product) => {
-                    const price = product.price * 12000
+                    const price = product.price.toLocaleString()
 
                     return (
                         <div
@@ -129,7 +129,7 @@ const LandingProducts = () => {
                                 />
                                 <div className="absolute -bottom-3 -right-3 bg-yellow-400 w-20 h-20 rounded-full flex items-center justify-center rotate-12 shadow-lg">
                                     <p className="text-red-600 font-bold text-sm text-center">
-                                        {price.toLocaleString()} <span className="text-xs">/</span>
+                                        {price} сум
                                     </p>
                                 </div>
                             </div>

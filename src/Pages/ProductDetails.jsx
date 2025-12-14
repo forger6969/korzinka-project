@@ -41,25 +41,30 @@ const ProductDetails = () => {
             const getUserID = JSON.parse(localStorage.getItem("currentUserID"))
 
             if (!getUserID) {
-                alert("Akkountga kir")
+                alert("Пожалуйста, войдите в аккаунт")
                 return
             }
 
-            const req = await axios.post(
-                `https://korzinka-server.onrender.com/products/${id}/comments`,
-                {
-                    userId: getUserID,
-                    text: reviewText,
-                    rating: reviewRating
-                }
-            )
+            if (reviewText.trim() !== "") {
+                const req = await axios.post(
+                    `https://korzinka-server.onrender.com/products/${id}/comments`,
+                    {
+                        userId: getUserID,
+                        text: reviewText,
+                        rating: reviewRating
+                    }
+                )
 
-            if (req.status === 200) {
-                setSuccess(true)
-                setText("")
-                setRating(0)
-                getProductsByID()
+                if (req.status === 200) {
+                    setSuccess(true)
+                    setText("")
+                    setRating(0)
+                    getProductsByID()
+                }
+            } else {
+                alert(`Введите текст`)
             }
+
         } catch (err) {
             console.log(err)
         }
@@ -71,9 +76,7 @@ const ProductDetails = () => {
         const cart = JSON.parse(localStorage.getItem("cart")) || []
         const productIds = JSON.parse(localStorage.getItem("productIds")) || []
 
-        const index = cart.findIndex(
-            item => item.product._id === product._id
-        )
+        const index = cart.findIndex(item => item.product._id === product._id)
 
         if (index !== -1) {
             cart[index].count += 1
@@ -93,9 +96,7 @@ const ProductDetails = () => {
         const cart = JSON.parse(localStorage.getItem("cart")) || []
         let productIds = JSON.parse(localStorage.getItem("productIds")) || []
 
-        const index = cart.findIndex(
-            item => item.product._id === product._id
-        )
+        const index = cart.findIndex(item => item.product._id === product._id)
 
         if (index === -1) return
 
@@ -121,79 +122,67 @@ const ProductDetails = () => {
     }, [])
 
     return (
-        <div className="pt-[120px] px-6 max-w-7xl mx-auto bg-gradient-to-b from-[#fafafa] to-white">
+        <div className="pt-28 px-6 max-w-7xl mx-auto bg-base-100">
             <AnimatePresence>
                 {product && (
                     <>
                         {/* PRODUCT CARD */}
                         <motion.div
-                            initial={{ opacity: 0, y: 60 }}
+                            initial={{ opacity: 0, y: 50 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6 }}
-                            className="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white rounded-[32px] shadow-2xl p-8 mb-14"
+                            className="grid grid-cols-1 lg:grid-cols-2 gap-10 card bg-white shadow-xl rounded-3xl p-6 mb-12"
                         >
-                            <div className="relative group">
-                                <div className="absolute inset-0 bg-[#e4002b] opacity-10 blur-2xl rounded-3xl" />
-                                <motion.img
-                                    whileHover={{ scale: 1.08 }}
-                                    transition={{ duration: 0.5 }}
+                            <div className="relative">
+                                <img
                                     src={product.images[0]}
                                     alt={product.name}
-                                    className="relative w-full h-[420px] object-cover rounded-3xl shadow-xl"
+                                    className="rounded-2xl object-cover w-full h-[400px] shadow-md"
                                 />
                             </div>
 
-                            <div className="flex flex-col gap-6">
-                                <div>
-                                    <span className="inline-block px-4 py-1 rounded-full bg-[#e4002b]/10 text-[#e4002b] font-semibold text-sm">
-                                        {product.category}
-                                    </span>
-                                </div>
+                            <div className="flex flex-col gap-5">
+                                <span className="badge badge-lg" style={{ backgroundColor: '#e4002b', color: 'white' }}>
+                                    {product.category}
+                                </span>
 
-                                <h1 className="text-5xl font-extrabold text-[#302E33]">
-                                    {product.name}
-                                </h1>
+                                <h1 className="text-4xl font-bold">{product.name}</h1>
 
-                                <p className="text-gray-600 text-lg leading-relaxed">
-                                    {product.description}
-                                </p>
+                                <p className="text-gray-600">{product.description}</p>
 
-                                <div className="flex items-center gap-3">
-                                    <span className="text-yellow-400 text-3xl">★</span>
-                                    <span className="font-bold text-xl">
+                                <div className="flex items-center gap-2 mt-2">
+                                    <span className="text-yellow-400 text-2xl">★</span>
+                                    <span className="font-semibold text-lg">
                                         {product.rating} / 5
                                     </span>
                                 </div>
 
-                                <div className="text-4xl font-extrabold text-[#e4002b]">
+                                <div className="text-3xl font-bold mt-2" style={{ color: '#e4002b' }}>
                                     {product.price} сум
                                 </div>
 
                                 {count === 0 ? (
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
+                                    <button
                                         onClick={addToCart}
-                                        className="mt-6 px-10 py-5 bg-[#e4002b] text-white rounded-2xl text-xl shadow-xl"
+                                        className="btn mt-4 text-white"
+                                        style={{ backgroundColor: '#e4002b' }}
                                     >
                                         Добавить в корзину
-                                    </motion.button>
+                                    </button>
                                 ) : (
-                                    <div className="flex items-center gap-6 mt-6">
+                                    <div className="flex items-center gap-4 mt-4">
                                         <button
                                             onClick={minusFromCart}
-                                            className="w-14 h-14 rounded-2xl bg-gray-100 text-3xl hover:bg-gray-200 transition"
+                                            className="btn btn-outline"
+                                            style={{ borderColor: '#e4002b', color: '#e4002b' }}
                                         >
                                             −
                                         </button>
-
-                                        <span className="text-3xl font-bold">
-                                            {count}
-                                        </span>
-
+                                        <span className="text-xl font-bold">{count}</span>
                                         <button
                                             onClick={addToCart}
-                                            className="w-14 h-14 rounded-2xl bg-[#e4002b] text-white text-3xl hover:scale-110 transition"
+                                            className="btn text-white"
+                                            style={{ backgroundColor: '#e4002b' }}
                                         >
                                             +
                                         </button>
@@ -207,24 +196,20 @@ const ProductDetails = () => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="bg-white rounded-3xl shadow-xl p-8 mb-14"
+                            className="card bg-white shadow-xl rounded-3xl p-6 mb-12"
                         >
-                            <h2 className="text-3xl font-bold mb-6">
-                                Оставить отзыв
-                            </h2>
-
+                            <h2 className="text-2xl font-bold mb-4">Оставить отзыв</h2>
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <input
                                     value={reviewText}
                                     onChange={(e) => setText(e.target.value)}
                                     placeholder="Ваш отзыв..."
-                                    className="md:col-span-2 border rounded-2xl px-5 py-4 text-lg focus:ring-2 focus:ring-[#e4002b]"
+                                    className="input input-bordered md:col-span-2"
                                 />
-
                                 <select
                                     value={reviewRating}
                                     onChange={(e) => setRating(Number(e.target.value))}
-                                    className="border rounded-2xl px-4 py-4 text-lg"
+                                    className="select select-bordered"
                                 >
                                     <option value="0">Оценка</option>
                                     <option value="1">1 ⭐</option>
@@ -233,14 +218,13 @@ const ProductDetails = () => {
                                     <option value="4">4 ⭐</option>
                                     <option value="5">5 ⭐</option>
                                 </select>
-
-                                <motion.button
-                                    whileTap={{ scale: 0.95 }}
-                                    className="bg-[#e4002b] text-white rounded-2xl text-lg font-semibold"
+                                <button
                                     onClick={postNewComment}
+                                    className="btn text-white"
+                                    style={{ backgroundColor: '#e4002b' }}
                                 >
                                     Отправить
-                                </motion.button>
+                                </button>
                             </div>
                         </motion.div>
 
@@ -249,37 +233,33 @@ const ProductDetails = () => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.4 }}
-                            className="bg-white rounded-3xl shadow-xl p-8"
+                            className="card bg-white shadow-xl rounded-3xl p-6"
                         >
-                            <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
-                                <Users size={26} />
+                            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                                <Users size={22} />
                                 Отзывы ({product.comments.length})
                             </h2>
 
-                            <div className="grid gap-5">
+                            <div className="flex flex-col gap-4 max-h-[400px] overflow-y-auto pr-2">
                                 {product.comments.map((m) => {
                                     const user =
                                         allUsers && allUsers.find((u) => u._id === m.userId)
 
                                     return (
-                                        <motion.div
+                                        <div
                                             key={m._id}
-                                            initial={{ opacity: 0, y: 30 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            className="rounded-2xl border p-5 hover:shadow-lg transition"
+                                            className="card bg-base-200 p-4 rounded-2xl shadow hover:shadow-lg transition"
                                         >
-                                            <div className="flex justify-between items-center mb-2">
-                                                <p className="font-bold text-lg">
+                                            <div className="flex justify-between mb-2">
+                                                <p className="font-bold">
                                                     {user ? user.name : "Пользователь"}
                                                 </p>
-                                                <span className="text-yellow-400 text-lg">
+                                                <span className="text-yellow-400">
                                                     {"★".repeat(m.rating)}
                                                 </span>
                                             </div>
-                                            <p className="text-gray-600 text-lg">
-                                                {m.text}
-                                            </p>
-                                        </motion.div>
+                                            <p className="text-gray-600">{m.text}</p>
+                                        </div>
                                     )
                                 })}
                             </div>
