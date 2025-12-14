@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import logo from '../assets/korzinka_logo.webp';
 import {
     biz_haqimizda_SVG, cart_SVG, catalog_SVG, dokonlar_SVG, heart_SVG,
-    karyera_SVG, korzinka_go_SVG, korzinka_plus_SVG, news_SVG, search_SVG, yana_SVG
+    karyera_SVG, korzinka_go_SVG, korzinka_plus_SVG, news_SVG, yana_SVG
 } from "./SvgMaterials";
 import { LuUserRound, LuMenu, LuX } from "react-icons/lu";
 import LoginModal from "./LoginModal";
@@ -76,7 +76,6 @@ export default function HeaderLanding() {
 
     return (
         <>
-            {/* HEADER */}
             <motion.header
                 initial={{ y: -70, opacity: 0 }}
                 animate={{ y: hidden ? -100 : 0, opacity: hidden ? 0 : 1 }}
@@ -99,18 +98,9 @@ export default function HeaderLanding() {
                         ))}
                     </nav>
 
-                    {/* Мобильный бургер */}
-                    <div className="lg:hidden flex items-center gap-4">
-                        <button onClick={() => setBurgerOpen(prev => !prev)} className="text-gray-700 text-2xl">
-                            {burgerOpen ? <LuX /> : <LuMenu />}
-                        </button>
-                        <div onClick={openModalCheck} className="flex flex-col items-center text-gray-800 cursor-pointer">
-                            <LuUserRound size={24} className="text-[#e4002b]" />
-                        </div>
-                    </div>
-
-                    {/* Язык и баланс для десктопа */}
+                    {/* Правый блок: язык, баланс и профиль */}
                     <div className="hidden lg:flex items-center gap-4">
+                        {/* Языки */}
                         <div className="dropdown dropdown-end">
                             <div tabIndex={0} className="btn btn-sm bg-gray-100 border-gray-200 text-gray-800">
                                 {currentLanguage.toUpperCase()}
@@ -122,14 +112,31 @@ export default function HeaderLanding() {
                             </ul>
                         </div>
 
+                        {/* Баланс */}
                         {user && <div className="bg-[#e4002b] text-white px-4 py-1 rounded-lg flex flex-col items-center justify-center text-xs">
                             <span>Balance</span>
                             <span className="font-bold text-sm">{user.balance.toLocaleString()}</span>
                         </div>}
+
+                        {/* Профиль и имя */}
+                        <div onClick={openModalCheck} className="flex flex-col items-center text-gray-800 cursor-pointer">
+                            <LuUserRound size={24} className="text-[#e4002b]" />
+                            <span className="text-xs mt-1">{user ? user.name : "Войти"}</span>
+                        </div>
+                    </div>
+
+                    {/* Мобильный бургер */}
+                    <div className="lg:hidden flex items-center gap-4">
+                        <button onClick={() => setBurgerOpen(prev => !prev)} className="text-gray-700 text-2xl">
+                            {burgerOpen ? <LuX /> : <LuMenu />}
+                        </button>
+                        <div onClick={openModalCheck} className="flex flex-col items-center text-gray-800 cursor-pointer">
+                            <LuUserRound size={24} className="text-[#e4002b]" />
+                        </div>
                     </div>
                 </div>
 
-                {/* Мобильное выдвижное меню */}
+                {/* Мобильное меню */}
                 {burgerOpen && (
                     <motion.nav
                         initial={{ height: 0, opacity: 0 }}
