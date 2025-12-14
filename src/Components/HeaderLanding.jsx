@@ -11,17 +11,13 @@ import LoginModal from "./LoginModal";
 import { AppContext } from "../AppContext";
 import axios from "axios";
 import { path } from "framer-motion/client";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 export default function HeaderLanding() {
 
     const { userInfo } = useContext(AppContext)
-    const { userName, userID } = userInfo
-    console.log(userID);
-
-
-    const [allUserInfo, setAll] = useState(null)
+    const { user, userID } = userInfo
 
     const [hidden, setHidden] = useState(false);
     const [lastY, setLastY] = useState(0);
@@ -30,6 +26,7 @@ export default function HeaderLanding() {
     const [loginModal, setModal] = useState(false)
 
     const { t, i18n } = useTranslation();
+    const navigate = useNavigate()
 
     const changeLanguage = (lang) => {
         i18n.changeLanguage(lang);
@@ -37,24 +34,9 @@ export default function HeaderLanding() {
         setLang(lang);
     };
 
-    const getUserByID = async () => {
-        try {
-
-            if (userID) {
-                const req = await axios.get(`https://korzinka-server.onrender.com/users/${userID}`)
-                const data = req.data
-                console.log(data);
-                setAll(data)
-            }
-
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
     const openModalCheck = () => {
-        if (allUserInfo) {
-            alert(`Akkaunt bor`)
+        if (user) {
+            navigate('/profile')
         } else {
             setModal(true)
         }
@@ -63,7 +45,6 @@ export default function HeaderLanding() {
     useEffect(() => {
         const getLang = localStorage.getItem(`language`) || "uz";
         setLang(getLang);
-        getUserByID()
     }, []);
 
 
@@ -134,15 +115,15 @@ export default function HeaderLanding() {
                         </div>
 
                         {/* Баланс */}
-                        {allUserInfo && <div className="bg-[#e4002b] text-white px-4 py-1 rounded-lg flex flex-col items-center justify-center text-xs">
+                        {user && <div className="bg-[#e4002b] text-white px-4 py-1 rounded-lg flex flex-col items-center justify-center text-xs">
                             <span>Balance</span>
-                            <span className="font-bold text-sm">{allUserInfo[0].balance}</span>
+                            <span className="font-bold text-sm">{user.balance.toLocaleString()}</span>
                         </div>}
 
                         {/* Профиль */}
                         <div onClick={openModalCheck} className="flex flex-col items-center text-gray-800 cursor-pointer">
                             <LuUserRound size={24} className="text-[#e4002b]" />
-                            <span className="text-xs mt-1">{allUserInfo ? allUserInfo[0].name : "Войти"}</span>
+                            <span className="text-xs mt-1">{user ? user.name : "Войти"}</span>
                         </div>
                     </div>
                 </div>

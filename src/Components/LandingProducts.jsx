@@ -2,6 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 const LandingProducts = () => {
     const [products, setProducts] = useState([])
@@ -10,6 +11,7 @@ const LandingProducts = () => {
     const [cartCount, setCartCount] = useState(0)
     const [notification, setNotification] = useState(null) // уведомление
     const { t } = useTranslation()
+    const navigate = useNavigate()
 
     const getProducts = async () => {
         try {
@@ -120,7 +122,7 @@ const LandingProducts = () => {
                             className="bg-white rounded-2xl shadow-md flex flex-col items-center relative min-w-[300px] max-w-[300px] pb-4"
                         >
                             <div className="relative w-full flex justify-center">
-                                <img
+                                <img onClick={() => navigate(`/details/${product._id}`)}
                                     src={product.images[0]}
                                     alt={product.name}
                                     className="w-full h-32 object-cover rounded-t-2xl"

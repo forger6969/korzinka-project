@@ -5,24 +5,28 @@ import { AppContext } from './AppContext'
 import axios from 'axios'
 import CartPage from './Pages/CartPage'
 import HeaderLanding from './Components/HeaderLanding'
+import ProfilePage from './Pages/ProfilePage'
+import ProductDetails from './Pages/ProductDetails'
+import NotFoundPage from './Pages/NotFoundPage'
 
 
 const App = () => {
 
-  const [user, setUser] = useState("Войти")
+  const [user, setUser] = useState(null)
   const [userID, setUserID] = useState(null)
 
   const getUser = async () => {
     try {
 
-      const getUserId = localStorage.getItem(`currentUserID`)
+      const getUserId = JSON.parse(localStorage.getItem(`currentUserID`))
+      console.log(getUserId);
 
       if (getUserId) {
 
         const axiosUser = await axios.get(`https://korzinka-server.onrender.com/users/${getUserId}`)
-        console.log(getUserId);
+        console.log(axiosUser.data);
 
-        setUser(axiosUser.data.name)
+        setUser(axiosUser.data)
         setUserID(getUserId)
       }
 
@@ -40,7 +44,8 @@ const App = () => {
     <AppContext.Provider value={{
       userInfo: {
         userID: userID,
-        userName: user
+        user: user,
+        setUser: setUser
       }
     }}>
       <BrowserRouter>
@@ -49,7 +54,12 @@ const App = () => {
         <Routes>
           <Route path='/' element={<LandingPage />} />
           <Route path='/cart' element={<CartPage />} />
+          <Route path='/profile' element={<ProfilePage />} />
+          <Route path='/details/:id' element={<ProductDetails />} />
+          <Route path='*' element={<NotFoundPage />} />
         </Routes>
+
+      
 
       </BrowserRouter>
     </AppContext.Provider>

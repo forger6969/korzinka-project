@@ -6,7 +6,7 @@ const LoginModal = ({ onClose }) => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");   // <-- для ошибки
+    const [error, setError] = useState("");
 
     const loginUser = async () => {
         try {
