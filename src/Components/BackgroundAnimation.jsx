@@ -5,40 +5,26 @@ const BackgroundAnimation = () => {
     const [shapes, setShapes] = useState([]);
 
     useEffect(() => {
-        const newShapes = Array.from({ length: 40 }).map(() => {
-            const size = Math.random() * 100 + 30;
-            const opacity = Math.random() * 0.3 + 0.2;
-            const duration = Math.random() * 15 + 10;
-            const side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+        const isMobile = window.innerWidth <= 768; // мобильные устройства
+        const count = isMobile ? 15 : 40; // меньше фигур на телефоне
 
-            let initial = {};
-            let animate = {};
+        const newShapes = Array.from({ length: count }).map(() => {
+            const size = isMobile ? Math.random() * 40 + 20 : Math.random() * 100 + 30;
+            const opacity = isMobile ? Math.random() * 0.2 + 0.1 : Math.random() * 0.3 + 0.2;
+            const duration = isMobile ? Math.random() * 8 + 5 : Math.random() * 15 + 10;
 
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
+            const x = Math.random() * screenWidth;
+            const y = -size;
 
-            switch (side) {
-                case 0: // top
-                    initial = { x: Math.random() * screenWidth, y: -size };
-                    animate = { x: initial.x + (Math.random() * 200 - 100), y: screenHeight + size };
-                    break;
-                case 1: // right
-                    initial = { x: screenWidth + size, y: Math.random() * screenHeight };
-                    animate = { x: -size, y: initial.y + (Math.random() * 200 - 100) };
-                    break;
-                case 2: // bottom
-                    initial = { x: Math.random() * screenWidth, y: screenHeight + size };
-                    animate = { x: initial.x + (Math.random() * 200 - 100), y: -size };
-                    break;
-                case 3: // left
-                    initial = { x: -size, y: Math.random() * screenHeight };
-                    animate = { x: screenWidth + size, y: initial.y + (Math.random() * 200 - 100) };
-                    break;
-                default:
-                    break;
-            }
-
-            return { size, opacity, duration, initial, animate };
+            return {
+                size,
+                opacity,
+                duration,
+                initial: { x, y },
+                animate: { x, y: screenHeight + size },
+            };
         });
 
         setShapes(newShapes);
@@ -64,7 +50,6 @@ const BackgroundAnimation = () => {
                         borderRadius: "50%",
                         position: "absolute",
                         opacity: shape.opacity,
-                        filter: "blur(2px)",
                     }}
                 />
             ))}
